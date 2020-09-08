@@ -14,12 +14,12 @@ namespace MarkerServiceTests
         [SetUp]
         public void Setup()
         {
-            IInfraDAL dal = new InfraDAL();
+            /*IInfraDAL dal = new InfraDAL();
             var strConn = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))" +
                           "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));" +
                           "User Id=ZIVPROJ;Password=1234;";
             _service = new MarkerServiceImpl(dal);
-            _service.Connect(strConn);
+            _service.Connect(strConn);*/
 
         }
 

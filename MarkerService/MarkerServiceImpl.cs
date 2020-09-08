@@ -16,9 +16,11 @@ namespace MarkerService
     {
         IInfraDAL _dal;
         IDBConnection _conn;
-        public MarkerServiceImpl(IInfraDAL dal)
+        private IMarkerWebSocket _webSocket;
+        public MarkerServiceImpl(IInfraDAL dal,IMarkerWebSocket webSocket)
         {
             _dal = dal;
+            _webSocket = webSocket;
         }
 
         public void Connect(string connStr)
@@ -42,7 +44,14 @@ namespace MarkerService
             }
             else
             {
-                IDBParameter markerID = _dal.CreateParameter("P_MARKER_ID", Guid.NewGuid().ToString());
+                var id = Guid.NewGuid().ToString();
+                Marker marker = new Marker()
+                {
+                    BackColor = request.BackColor,DocID =  request.DocID,ForeColor = request.ForeColor,MarkerID = id
+                    ,MarkerLocation = request.MarkerLocation,
+                    MarkerType =  request.MarkerType,UserID = request.UserID
+                };
+                IDBParameter markerID = _dal.CreateParameter("P_MARKER_ID", id);
                 IDBParameter docID = _dal.CreateParameter("P_DOC_ID", request.DocID);
                 IDBParameter userID = _dal.CreateParameter("P_USER_ID", request.UserID);
                 IDBParameter backColor = _dal.CreateParameter("P_BACK_COLOR", request.BackColor);
@@ -58,6 +67,7 @@ namespace MarkerService
                         markerxRadius,
                         markeryRadius, foreColor, backColor, userID);
                     retval = new CreateMarkerResponseOK(request);
+                    await _webSocket.Notify("new Marker "+ id);
                 }
                 catch(Exception ex)
                 {
@@ -105,6 +115,7 @@ namespace MarkerService
                 {
                     _dal.ExecuteSPQuery(_conn, "REMOVEMARKER", markerID);
                     retval = new RemoveMarkerResponseOK(request);
+                    _webSocket.Notify("remove marker: " + markerID);
                 }
                 catch(Exception ex)
                 {

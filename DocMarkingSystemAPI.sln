@@ -21,17 +21,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F2FC3777
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserServiceTests", "UserServiceTests\UserServiceTests.csproj", "{4F542B50-7C88-4A5A-B4E8-1B050C958A74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentService", "DocumentService\DocumentService.csproj", "{41A032F2-B89F-4E57-A0C8-B2DD805B9000}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentService", "DocumentService\DocumentService.csproj", "{41A032F2-B89F-4E57-A0C8-B2DD805B9000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentServiceTests", "DocumentServiceTests\DocumentServiceTests.csproj", "{C19C38B4-8DC9-4A31-882D-FC2BFFCE1D6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentServiceTests", "DocumentServiceTests\DocumentServiceTests.csproj", "{C19C38B4-8DC9-4A31-882D-FC2BFFCE1D6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkerService", "MarkerService\MarkerService.csproj", "{CAFBE765-96DE-4D02-87F0-F3E42C18C5FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkerService", "MarkerService\MarkerService.csproj", "{CAFBE765-96DE-4D02-87F0-F3E42C18C5FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkerServiceTests", "MarkerServiceTests\MarkerServiceTests.csproj", "{40A94C5E-C9B7-4FDD-8085-929BAE4917FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkerServiceTests", "MarkerServiceTests\MarkerServiceTests.csproj", "{40A94C5E-C9B7-4FDD-8085-929BAE4917FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharingService", "SharingService\SharingService.csproj", "{B53D8D32-755A-44B9-A8C4-533CBE02C466}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharingService", "SharingService\SharingService.csproj", "{B53D8D32-755A-44B9-A8C4-533CBE02C466}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShareServiceTests", "ShareServiceTests\ShareServiceTests.csproj", "{F9E18255-BC21-415F-B530-6525A941509A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShareServiceTests", "ShareServiceTests\ShareServiceTests.csproj", "{F9E18255-BC21-415F-B530-6525A941509A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebSocketInfra", "WebSocketInfra", "{B072E68F-E5D3-4A88-91C6-17EE53B0A9AD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketInfraContracts", "WebSocketInfraContracts\WebSocketInfraContracts.csproj", "{3E804022-8A0B-4B63-8F13-568EE3F485A6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketInfra", "WebSocketInfra\WebSocketInfra.csproj", "{6DD415E0-0EBE-4E9E-A435-F9823E65573A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkerWebSocket", "MarkerWebSocket\MarkerWebSocket.csproj", "{13BB0A12-2E0D-4DF2-AEBC-699FC2224499}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentWebSocket", "DocumentWebSocket\DocumentWebSocket.csproj", "{19BBAF02-069D-403C-86C6-3C9072081A87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharingWebSocket", "SharingWebSocket\SharingWebSocket.csproj", "{02B3D55B-4AB0-44CC-A2A9-7B04C3A3C3DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +103,26 @@ Global
 		{F9E18255-BC21-415F-B530-6525A941509A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9E18255-BC21-415F-B530-6525A941509A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9E18255-BC21-415F-B530-6525A941509A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E804022-8A0B-4B63-8F13-568EE3F485A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E804022-8A0B-4B63-8F13-568EE3F485A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E804022-8A0B-4B63-8F13-568EE3F485A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E804022-8A0B-4B63-8F13-568EE3F485A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DD415E0-0EBE-4E9E-A435-F9823E65573A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DD415E0-0EBE-4E9E-A435-F9823E65573A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DD415E0-0EBE-4E9E-A435-F9823E65573A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DD415E0-0EBE-4E9E-A435-F9823E65573A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13BB0A12-2E0D-4DF2-AEBC-699FC2224499}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13BB0A12-2E0D-4DF2-AEBC-699FC2224499}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13BB0A12-2E0D-4DF2-AEBC-699FC2224499}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13BB0A12-2E0D-4DF2-AEBC-699FC2224499}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19BBAF02-069D-403C-86C6-3C9072081A87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19BBAF02-069D-403C-86C6-3C9072081A87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19BBAF02-069D-403C-86C6-3C9072081A87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19BBAF02-069D-403C-86C6-3C9072081A87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02B3D55B-4AB0-44CC-A2A9-7B04C3A3C3DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02B3D55B-4AB0-44CC-A2A9-7B04C3A3C3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02B3D55B-4AB0-44CC-A2A9-7B04C3A3C3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02B3D55B-4AB0-44CC-A2A9-7B04C3A3C3DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +135,8 @@ Global
 		{C19C38B4-8DC9-4A31-882D-FC2BFFCE1D6F} = {F2FC3777-6DEF-4D23-922B-77E6F6C7C8EC}
 		{40A94C5E-C9B7-4FDD-8085-929BAE4917FA} = {F2FC3777-6DEF-4D23-922B-77E6F6C7C8EC}
 		{F9E18255-BC21-415F-B530-6525A941509A} = {F2FC3777-6DEF-4D23-922B-77E6F6C7C8EC}
+		{3E804022-8A0B-4B63-8F13-568EE3F485A6} = {B072E68F-E5D3-4A88-91C6-17EE53B0A9AD}
+		{6DD415E0-0EBE-4E9E-A435-F9823E65573A} = {B072E68F-E5D3-4A88-91C6-17EE53B0A9AD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D352A04B-2E93-44A3-822B-2220DA56EFE9}

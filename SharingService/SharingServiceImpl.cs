@@ -25,12 +25,19 @@ namespace SharingService
         }
         public async Task<Response> CreateShare(CreateShareRequest request)
         {
-            Response retval = new CreateShareResponseInvalidID(request);
+            Response retval;
             if (await IsShareExists(request.Share))
             {
                 retval = new CreateShareResponseShareExists(request);
+            }else if (await IsDocumentExists(request.Share.DocID) && await IsUserExists(request.Share.UserID))
+            {
+                retval = new CreateShareResponseInvalidID(request);
             }
-            else if (await IsDocumentExists(request.Share.DocID) && await IsUserExists(request.Share.UserID))
+            else if (!await IsUserOwner(request.UserID,request.Share.DocID))
+            {
+                retval = new CreateShareResponseNotAuthorized(request);
+            }
+            else
             {
                 try
                 {
@@ -103,7 +110,14 @@ namespace SharingService
         public async Task<Response> RemoveShare(RemoveShareRequest request)
         {
             Response retval = new RemoveShareResponseInvalidID(request);
-            if (await IsShareExists(request.Share))
+            if (!await IsShareExists(request.Share))
+            {
+                retval = new RemoveShareResponseInvalidID(request);
+            }else if (request.UserID != request.Share.UserID && !await IsUserOwner(request.UserID, request.Share.DocID) )
+            {
+                retval = new RemoveShareResponseNotAuthorized(request);
+            }
+            else
             {
                 try
                 {
@@ -120,6 +134,18 @@ namespace SharingService
             return retval;
         }
 
+        private async Task<bool> IsUserOwner(string userID, string docID)
+        {
+            var retval = true;
+            DataSet ds = _dal.ExecuteQuery(_conn, "select * from documents where document_id = '" + docID + "' and user_id = '" +
+                                                  userID + "'");
+            if (ds.Tables[0].Rows.Count == 0)
+            {
+                retval = false;
+            }
+
+            return retval;
+        }
         private async Task<bool> IsDocumentExists(string docID)
         {
             var retval = true;

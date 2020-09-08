@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.WebSockets;
+using System.Threading;
 using System.Threading.Tasks;
 using DI;
 using DIContract;
+using DocMarkingSystemContracts.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -57,6 +60,33 @@ namespace DocMarkingSystemAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseWebSockets();
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path == "/ws/marker")
+                {
+                    if (context.WebSockets.IsWebSocketRequest)
+                    {
+                        WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                        var handler = app.ApplicationServices.GetService<IMarkerWebSocket>();
+                        await handler.onConnected(webSocket);
+                        var recive = await webSocket.ReceiveAsync(new Memory<byte>(), CancellationToken.None);
+                        if (recive.MessageType == WebSocketMessageType.Close)
+                        {
+                            await handler.onDisconnected(webSocket);
+                        }
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 400;
+                    }
+                }
+                else
+                {
+                    await next();
+                }
+            });
 
             app.UseHttpsRedirection();
             //static files
