@@ -29,7 +29,7 @@ namespace SharingService
             if (await IsShareExists(request.Share))
             {
                 retval = new CreateShareResponseShareExists(request);
-            }else if (await IsDocumentExists(request.Share.DocID) && await IsUserExists(request.Share.UserID))
+            }else if (!await IsDocumentExists(request.Share.DocID) || !await IsUserExists(request.Share.UserID))
             {
                 retval = new CreateShareResponseInvalidID(request);
             }
