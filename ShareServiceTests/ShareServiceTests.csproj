@@ -13,8 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DocMarkingSystemDAL\DocMarkingSystemDAL.csproj" />
     <ProjectReference Include="..\InfraDAL\ORDAL.csproj" />
     <ProjectReference Include="..\SharingService\SharingService.csproj" />
+    <ProjectReference Include="..\SharingWebSocket\SharingWebSocket.csproj" />
+    <ProjectReference Include="..\WebSocketInfra\WebSocketInfra.csproj" />
   </ItemGroup>
 
 </Project>

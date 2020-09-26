@@ -15,6 +15,7 @@ namespace DocMarkingSystemContracts.Interfaces
         public Task onConnected(WebSocket socket);
 
         public Task onDisconnected(WebSocket socket);
-        public Task Notify(string massage);
+        public Task SendNewMarker(Marker marker);
+        public Task SendRemoveMarker(string markerID);
     }
 }

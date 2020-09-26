@@ -39,11 +39,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketInfraContracts", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketInfra", "WebSocketInfra\WebSocketInfra.csproj", "{6DD415E0-0EBE-4E9E-A435-F9823E65573A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkerWebSocket", "MarkerWebSocket\MarkerWebSocket.csproj", "{13BB0A12-2E0D-4DF2-AEBC-699FC2224499}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkerWebSocket", "MarkerWebSocket\MarkerWebSocket.csproj", "{13BB0A12-2E0D-4DF2-AEBC-699FC2224499}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentWebSocket", "DocumentWebSocket\DocumentWebSocket.csproj", "{19BBAF02-069D-403C-86C6-3C9072081A87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentWebSocket", "DocumentWebSocket\DocumentWebSocket.csproj", "{19BBAF02-069D-403C-86C6-3C9072081A87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharingWebSocket", "SharingWebSocket\SharingWebSocket.csproj", "{02B3D55B-4AB0-44CC-A2A9-7B04C3A3C3DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharingWebSocket", "SharingWebSocket\SharingWebSocket.csproj", "{02B3D55B-4AB0-44CC-A2A9-7B04C3A3C3DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocMarkingSystemDAL", "DocMarkingSystemDAL\DocMarkingSystemDAL.csproj", "{F5315F1D-8E5F-4912-BBC7-A6BB133C9D38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewWebSocket", "ViewWebSocket\ViewWebSocket.csproj", "{9C733774-F188-416B-83AA-ACA8D05DB70D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveDrawWebSocket", "LiveDrawWebSocket\LiveDrawWebSocket.csproj", "{084923CE-C58F-480B-BEFB-980A0B090F95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,6 +129,18 @@ Global
 		{02B3D55B-4AB0-44CC-A2A9-7B04C3A3C3DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02B3D55B-4AB0-44CC-A2A9-7B04C3A3C3DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02B3D55B-4AB0-44CC-A2A9-7B04C3A3C3DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5315F1D-8E5F-4912-BBC7-A6BB133C9D38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5315F1D-8E5F-4912-BBC7-A6BB133C9D38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5315F1D-8E5F-4912-BBC7-A6BB133C9D38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5315F1D-8E5F-4912-BBC7-A6BB133C9D38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C733774-F188-416B-83AA-ACA8D05DB70D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C733774-F188-416B-83AA-ACA8D05DB70D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C733774-F188-416B-83AA-ACA8D05DB70D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C733774-F188-416B-83AA-ACA8D05DB70D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{084923CE-C58F-480B-BEFB-980A0B090F95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{084923CE-C58F-480B-BEFB-980A0B090F95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{084923CE-C58F-480B-BEFB-980A0B090F95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{084923CE-C58F-480B-BEFB-980A0B090F95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

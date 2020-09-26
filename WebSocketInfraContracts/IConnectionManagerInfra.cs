@@ -8,6 +8,7 @@ namespace WebSocketInfraContracts
 {
     public interface IConnectionManagerInfra
     {
+        public void AddSocket(WebSocket socket, string id);
         public WebSocket GetSocketByID(string id);
         public IEnumerable<WebSocket> GetAllConnections();
         public string GetID(WebSocket socket);

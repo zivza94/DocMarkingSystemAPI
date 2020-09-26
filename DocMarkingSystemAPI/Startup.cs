@@ -64,12 +64,95 @@ namespace DocMarkingSystemAPI
             app.UseWebSockets();
             app.Use(async (context, next) =>
             {
-                if (context.Request.Path == "/ws/marker")
+                if (context.Request.Path.StartsWithSegments("/ws/marker"))
                 {
                     if (context.WebSockets.IsWebSocketRequest)
                     {
                         WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
                         var handler = app.ApplicationServices.GetService<IMarkerWebSocket>();
+                        await handler.onConnected(webSocket);
+                        var recive = await webSocket.ReceiveAsync(new Memory<byte>(), CancellationToken.None);
+                        if (recive.MessageType == WebSocketMessageType.Close)
+                        {
+                            await handler.onDisconnected(webSocket);
+                        }
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 400;
+                    }
+                }else if (context.Request.Path.StartsWithSegments("/ws/view"))
+                {
+                    if (context.WebSockets.IsWebSocketRequest)
+                    {
+                        string userID = context.Request.Query["id"];
+                        string docID = context.Request.Query["docID"];
+                        WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                        var handler = app.ApplicationServices.GetService<IViewWebSocket>();
+                        await handler.onConnected(webSocket, userID,docID);
+                        var recive = await webSocket.ReceiveAsync(new Memory<byte>()
+                            , CancellationToken.None);
+                        if (recive.MessageType == WebSocketMessageType.Close)
+                        {
+                            await handler.onDisconnected(webSocket,userID,docID);
+                        }
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 400;
+                    }
+                }
+                else if (context.Request.Path.StartsWithSegments("/ws/liveDraw"))
+                {
+                    if (context.WebSockets.IsWebSocketRequest)
+                    {
+                        string userID = context.Request.Query["id"];
+                        string docID = context.Request.Query["docID"];
+                        WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                        var handler = app.ApplicationServices.GetService<ILiveDrawWebSocket>();
+                        await handler.onConnected(webSocket, userID, docID);
+                        var buffer = new byte[4082];
+                        var recive = await webSocket.ReceiveAsync(new Memory<byte>(buffer)
+                            , CancellationToken.None);
+                        if (recive.MessageType == WebSocketMessageType.Close)
+                        {
+                            await handler.onDisconnected(webSocket, userID, docID);
+                        }
+                        else
+                        {
+                            await handler.Receive(webSocket, userID, docID,buffer);
+                        }
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 400;
+                    }
+                }
+                else if (context.Request.Path.StartsWithSegments("/ws/document"))
+                {
+                    if (context.WebSockets.IsWebSocketRequest)
+                    {
+                        string userID = context.Request.Query["id"];
+                        WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                        var handler = app.ApplicationServices.GetService<IDocumentWebSocket>();
+                        await handler.onConnected(webSocket,userID);
+                        var recive = await webSocket.ReceiveAsync(new Memory<byte>()
+                            , CancellationToken.None);
+                        if (recive.MessageType == WebSocketMessageType.Close)
+                        {
+                            await handler.onDisconnected(webSocket);
+                        }
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 400;
+                    }
+                }else if (context.Request.Path == "/ws/sharing")
+                {
+                    if (context.WebSockets.IsWebSocketRequest)
+                    {
+                        WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                        var handler = app.ApplicationServices.GetService<ISharingWebSocket>();
                         await handler.onConnected(webSocket);
                         var recive = await webSocket.ReceiveAsync(new Memory<byte>(), CancellationToken.None);
                         if (recive.MessageType == WebSocketMessageType.Close)

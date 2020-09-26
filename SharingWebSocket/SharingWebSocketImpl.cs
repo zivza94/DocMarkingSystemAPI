@@ -28,10 +28,9 @@ namespace SharingWebSocket
             await Handler.onDisconnected(socket);
         }
 
-        public async Task SendShare(Share share)
+        public async Task Notify(string message)
         {
-            string JsonShare = JsonConvert.SerializeObject(share);
-            await Handler.SendMessageToAll(JsonShare);
+            await Handler.SendMessageToAll(message);
         }
     }
 }

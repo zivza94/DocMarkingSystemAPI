@@ -14,8 +14,11 @@ namespace DocMarkingSystemContracts.Interfaces
         public ISocketHandlerInfra Handler { get; set; }
 
         public Task onConnected(WebSocket socket);
+        public Task onConnected(WebSocket socket,string id);
 
         public Task onDisconnected(WebSocket socket);
-        public Task SendDocument(Document document);
+        public Task Notify(string message);
+        public Task SendAddDocument(Document document);
+        public Task SendRemoveDocument(string docID);
     }
 }

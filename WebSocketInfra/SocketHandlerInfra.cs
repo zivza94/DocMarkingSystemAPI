@@ -10,7 +10,7 @@ using WebSocketInfraContracts;
 
 namespace WebSocketInfra
 {
-    [Register(Policy.Singelton,typeof(ISocketHandlerInfra))]
+    [Register(Policy.Transient,typeof(ISocketHandlerInfra))]
     public class SocketHandlerInfra: ISocketHandlerInfra
     {
         public IConnectionManagerInfra Connection { get; set; }
@@ -25,9 +25,18 @@ namespace WebSocketInfra
             await Task.Run(() => { Connection.AddSocket(socket); });
         }
 
+        public async Task onConnected(WebSocket socket, string id)
+        {
+            await Task.Run(() => { Connection.AddSocket(socket,id); });
+        }
+
         public async Task onDisconnected(WebSocket socket)
         {
             await Connection.RemoveSocketAsync(Connection.GetID(socket));
+        }
+        public async Task onDisconnected(string id)
+        {
+            await Connection.RemoveSocketAsync(id);
         }
 
         public async Task SendMessage(WebSocket socket, string message)
@@ -52,6 +61,11 @@ namespace WebSocketInfra
         public Task Receive(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<WebSocket> GetSocketByID(string id)
+        {
+            return Connection.GetSocketByID(id);
         }
     }
 }

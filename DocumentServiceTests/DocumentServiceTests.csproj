@@ -15,8 +15,11 @@
   <ItemGroup>
     <ProjectReference Include="..\DALContracts\DALContracts.csproj" />
     <ProjectReference Include="..\DocMarkingSystemContracts\DocMarkingSystemContracts.csproj" />
+    <ProjectReference Include="..\DocMarkingSystemDAL\DocMarkingSystemDAL.csproj" />
     <ProjectReference Include="..\DocumentService\DocumentService.csproj" />
+    <ProjectReference Include="..\DocumentWebSocket\DocumentWebSocket.csproj" />
     <ProjectReference Include="..\InfraDAL\ORDAL.csproj" />
+    <ProjectReference Include="..\WebSocketInfra\WebSocketInfra.csproj" />
   </ItemGroup>
 
 </Project>

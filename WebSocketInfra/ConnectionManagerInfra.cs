@@ -20,10 +20,17 @@ namespace WebSocketInfra
             _connections.TryAdd(id, socket);
         }
 
+        public void AddSocket(WebSocket socket, string id)
+        {
+            _connections.TryAdd(id, socket);
+        }
+        
+
         public IEnumerable<WebSocket> GetAllConnections()
         {
             return _connections.Values;
         }
+        
 
         public string GetID(WebSocket socket)
         {
@@ -43,5 +50,7 @@ namespace WebSocketInfra
             await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "socket connection closed",
                 CancellationToken.None);
         }
+
+        
     }
 }

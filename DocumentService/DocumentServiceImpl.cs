@@ -19,11 +19,13 @@ namespace DocumentService
     [Register(Policy.Transient, typeof(IDocumentService))]
     public class DocumentServiceImpl : IDocumentService
     {
-        IInfraDAL _dal;
+        IDocMarkingSystemDAL _dal;
         IDBConnection _conn;
-        public DocumentServiceImpl(IInfraDAL dal)
+        private IDocumentWebSocket _webSocket;
+        public DocumentServiceImpl(IDocMarkingSystemDAL dal, IDocumentWebSocket webSocket)
         {
             _dal = dal;
+            _webSocket = webSocket;
         }
         public void Connect(string connStr)
         {
@@ -33,13 +35,11 @@ namespace DocumentService
         public async Task<Response> GetDocument(GetDocumentRequest request)
         {
             Response retval = new GetDocumentResponseInvalidDocID(request);
-            if (await IsDocumentExists(request.DocId))
+            if ( _dal.IsDocumentExists(_conn,request.DocId))
             {
-                IDBParameter docID = _dal.CreateParameter("P_DOC_ID", request.DocId);
-                IDBParameter outParam = _dal.GetOutParameter();
                 try
                 {
-                    DataSet ds = _dal.ExecuteSPQuery(_conn, "GETDOCUMENT", docID, outParam);
+                    DataSet ds = _dal.GetDocument(_conn, request.DocId);
                     var data = ds.Tables[0].Rows[0];
                     Document doc = new Document()
                     {
@@ -49,6 +49,7 @@ namespace DocumentService
                         UserID = (string) data["user_id"]
                     };
                     retval = new GetDocumentResponseOK(doc);
+                    
                 }
                 catch
                 {
@@ -63,19 +64,18 @@ namespace DocumentService
         {
             Response retval = new CreateDocumentResponseInvalidData(request);
             
-            if(await IsUserExists(request.UserID))
+            if(_dal.IsUserExists(_conn,request.UserID))
             {
-                var id = Guid.NewGuid();
-                IDBParameter docID = _dal.CreateParameter("P_DOCUMENT_ID", id.ToString());
-                IDBParameter userID = _dal.CreateParameter("P_USER_ID", request.UserID);
-                IDBParameter imageURL = _dal.CreateParameter("P_IMAGE_URL", request.ImageURL);
-                IDBParameter documentName = _dal.CreateParameter("P_DOCUMENT_NAME", request.DocumentName);
+                var id = Guid.NewGuid().ToString();
+                Document document = new Document(){DocID = id,DocumentName = request.DocumentName,
+                    ImageURL = request.ImageURL,UserID = request.UserID};
                 try
                 {
-                    DataSet ds = _dal.ExecuteSPQuery(_conn, "CreateDocument", docID, userID, imageURL, documentName);
+                    _dal.CreateDocument(_conn, document);
                     retval = new CreateDocumentResponseOK(request);
+                    await _webSocket.Notify("new Document" + id);
                 }
-                catch
+                catch(Exception ex)
                 {
                     retval = new AppResponseError("Error in create document");
                 }
@@ -86,15 +86,13 @@ namespace DocumentService
         public async Task<Response> GetDocuments(GetDocumentsRequest request)
         {
             Response retval = new GetDocumentsResponseInvalidUserID(request);
-            if (await IsUserExists(request.UserID))
+            if (_dal.IsUserExists(_conn,request.UserID))
             {
-                //validate user exist
                 List<Document> documents = new List<Document>();
-                IDBParameter userID = _dal.CreateParameter("P_USER_ID", request.UserID);
-                IDBParameter outParam = _dal.GetOutParameter();
+                
                 try
                 {
-                    DataSet ds = _dal.ExecuteSPQuery(_conn, "GETDOCUMENTS", userID, outParam);
+                    DataSet ds = _dal.GetDocuments(_conn, request.UserID);
                     var rows = ds.Tables[0].Rows;
                     foreach (DataRow row in rows)
                     {
@@ -132,42 +130,18 @@ namespace DocumentService
         public async Task<Response> RemoveDocument(RemoveDocumentRequest request)
         {
             Response retval = new RemoveDocumentResponseInvalidDocID(request);
-            if (await IsDocumentExists(request.DocID))
+            if (_dal.IsDocumentExists(_conn,request.DocID))
             {
                 try
                 {
-                    IDBParameter docID = _dal.CreateParameter("P_DOC_ID", request.DocID);
-                    _dal.ExecuteSPQuery(_conn, "REMOVEDOCUMENT", docID);
+                    _dal.RemoveDocument(_conn,request.DocID);
                     retval = new RemoveDocumentResponseOK(request);
+                    await _webSocket.Notify("remove document: " + request.DocID);
                 }
                 catch (Exception ex)
                 {
                     retval = new AppResponseError("Error in create document");
                 }
-            }
-
-            return retval;
-        }
-
-        private async Task<bool> IsDocumentExists(string docID)
-        {
-            var retval = true;
-            DataSet ds = _dal.ExecuteQuery(_conn, "select * from documents where document_id = '" + docID + "'");
-            if (ds.Tables[0].Rows.Count == 0)
-            {
-                retval = false;
-            }
-
-            return retval;
-        }
-
-        private async Task<bool> IsUserExists(string userID)
-        {
-            var retval = true;
-            DataSet ds = _dal.ExecuteQuery(_conn, "SELECT * FROM USERS WHERE USERID = '" + userID+ "'");
-            if (ds.Tables[0].Rows.Count == 0)
-            {
-                retval = false;
             }
 
             return retval;
@@ -218,7 +192,7 @@ namespace DocumentService
 
         }
 
-        private async Task<Response> RemoveSharedDocument(string docID)
+        /*private async Task<Response> RemoveSharedDocument(string docID)
         {
             Response retval = null;
             DataSet ds = _dal.ExecuteQuery(_conn, "SELECT * from shared_documents where doc_ID = '" + docID + "'");
@@ -244,14 +218,14 @@ namespace DocumentService
             } 
             return retval;
 
-        }
-        private async Task<HttpResponseMessage> RemoveShare(string jsonData)
+        }*/
+        /*private async Task<HttpResponseMessage> RemoveShare(string jsonData)
         {
             var url = "https://localhost:5001/api/Sharing/RemoveShare";
             using var client = new HttpClient();
             var data = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var retval = await client.PostAsync(url, data);
             return retval;
-        }
+        }*/
     }
 }

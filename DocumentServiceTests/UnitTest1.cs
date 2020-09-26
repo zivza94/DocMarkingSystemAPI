@@ -2,9 +2,13 @@ using DALContracts;
 using DocMarkingSystemContracts.DTO.Documents;
 using DocMarkingSystemContracts.DTO.Users;
 using DocMarkingSystemContracts.Interfaces;
+using DocMarkingSystemDAL;
 using DocumentService;
+using DocumentWebSocket;
 using NUnit.Framework;
 using ORDAL;
+using WebSocketInfra;
+using WebSocketInfraContracts;
 
 namespace DocumentServiceTests
 {
@@ -18,7 +22,7 @@ namespace DocumentServiceTests
             var strConn = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))" +
                           "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));" +
                           "User Id=ZIVPROJ;Password=1234;";
-            _documentService = new DocumentServiceImpl(dal);
+            _documentService = new DocumentServiceImpl(new DocMarkingSystemDALImpl(dal), new DocumentSocketImpl(new SocketHandlerInfra(new ConnectionManagerInfra())));
             _documentService.Connect(strConn);
 
         }

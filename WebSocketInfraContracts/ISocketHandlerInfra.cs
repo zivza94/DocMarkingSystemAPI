@@ -12,11 +12,12 @@ namespace WebSocketInfraContracts
         public IConnectionManagerInfra Connection { get; set; }
 
         public Task onConnected(WebSocket socket);
-
+        public Task onConnected(WebSocket socket, string id);
         public Task onDisconnected(WebSocket socket);
-
+        public Task onDisconnected(string id);
         public Task SendMessage(WebSocket socket, string message);
         public Task SendMessageToAll(string message);
         public Task Receive(WebSocket socket, WebSocketReceiveResult result, byte[] buffer);
+        public Task<WebSocket> GetSocketByID(string id);
     }
 }

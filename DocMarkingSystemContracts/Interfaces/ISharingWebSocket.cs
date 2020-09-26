@@ -16,6 +16,6 @@ namespace DocMarkingSystemContracts.Interfaces
         public Task onConnected(WebSocket socket);
 
         public Task onDisconnected(WebSocket socket);
-        public Task SendShare(Share share);
+        public Task Notify(string message);
     }
 }

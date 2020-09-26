@@ -5,8 +5,11 @@ using System.Net.WebSockets;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using DIContract;
+using DocMarkingSystemContracts.DTO.MarkersWS;
 using WebSocketInfraContracts;
 using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using RemoveMarkerResponse = DocMarkingSystemContracts.DTO.MarkersWS.RemoveMarkerResponse;
 
 namespace MarkerWebSocket
 {
@@ -31,6 +34,20 @@ namespace MarkerWebSocket
 
         public async Task Notify(string message)
         {
+            await Handler.SendMessageToAll(message);
+        }
+
+        public async Task SendNewMarker(Marker marker)
+        {
+            NewMarkerResponse response = new NewMarkerResponse(){Marker =  marker};
+            string message = JsonConvert.SerializeObject(response);
+            await Handler.SendMessageToAll(message);
+        }
+
+        public  async Task SendRemoveMarker(string markerID)
+        {
+            RemoveMarkerResponse response = new RemoveMarkerResponse() { MarkerID = markerID};
+            string message = JsonConvert.SerializeObject(response);
             await Handler.SendMessageToAll(message);
         }
     }

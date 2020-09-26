@@ -13,9 +13,9 @@ namespace UserService
     [Register(Policy.Transient,typeof(IUserService))]
     public class UserServiceImpl : IUserService
     {
-        IInfraDAL _dal;
+        IDocMarkingSystemDAL _dal;
         IDBConnection _conn;
-        public UserServiceImpl(IInfraDAL dal)
+        public UserServiceImpl(IDocMarkingSystemDAL dal)
         {
             _dal = dal;
         }
@@ -26,14 +26,11 @@ namespace UserService
         public async Task<Response> CreateUser(CreateUserRequest request)
         {
             Response retval = new CreateUserResponseUserIDExist(request);
-            DataSet validateDs = _dal.ExecuteQuery(_conn, "SELECT * FROM USERS WHERE USERID = '" + request.User.UserID + "'");
-            if(validateDs.Tables[0].Rows.Count == 0)
+            if(!_dal.IsUserExists(_conn,request.User.UserID))
             {
                 try
                 {
-                    IDBParameter userName = _dal.CreateParameter("P_USERNAME", request.User.UserName);
-                    IDBParameter userID = _dal.CreateParameter("P_USERID", request.User.UserID);
-                    _dal.ExecuteSPQuery(_conn, "CreateUser", userID, userName);
+                    _dal.CreateUser(_conn,request.User);
                     retval = new CreateUserResponseOK(request);
                 }
                 catch
@@ -49,9 +46,7 @@ namespace UserService
         {
             try
             {
-                IDBParameter userID = _dal.CreateParameter("UserID", request.UserID);
-                IDBParameter outParam = _dal.GetOutParameter();
-                DataSet ds = _dal.ExecuteSPQuery(_conn, "Login", userID, outParam);
+                DataSet ds = _dal.Login(_conn, request.UserID);
                 if (ds.Tables[0].Rows.Count == 0)
                 {
                     return new LoginResponseInvalidUserID(request);
@@ -68,18 +63,16 @@ namespace UserService
         public async Task<Response> RemoveUser(RemoveUserRequest request)
         {
             Response retval = new RemoveUserResponseUserIDNotExists(request);
-            DataSet validateDs = _dal.ExecuteQuery(_conn, "SELECT * FROM USERS WHERE USERID = '" + request.User.UserID + "' AND REMOVED = 0");
-            if (validateDs.Tables[0].Rows.Count != 0)
+            if (_dal.IsUserExists(_conn,request.User.UserID))
             {
                 try
                 {
-                    IDBParameter userID = _dal.CreateParameter("UserID", request.User.UserID);
-                    _dal.ExecuteSPQuery(_conn, "RemoveUser", userID);
+                    _dal.RemoveUser(_conn,request.User.UserID);
                     retval = new RemoveUserResponseOK(request);
                 }
                 catch
                 {
-                    retval = new AppResponseError("Couldn't create user, due to error in dataBase");
+                    retval = new AppResponseError("Couldn't remove user, due to error in dataBase");
                 }
             }
             return retval;

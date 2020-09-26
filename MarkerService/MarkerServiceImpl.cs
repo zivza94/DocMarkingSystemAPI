@@ -14,10 +14,10 @@ namespace MarkerService
     [Register(Policy.Transient,typeof(IMarkerService))]
     public class MarkerServiceImpl:IMarkerService
     {
-        IInfraDAL _dal;
+        IDocMarkingSystemDAL _dal;
         IDBConnection _conn;
         private IMarkerWebSocket _webSocket;
-        public MarkerServiceImpl(IInfraDAL dal,IMarkerWebSocket webSocket)
+        public MarkerServiceImpl(IDocMarkingSystemDAL dal, IMarkerWebSocket webSocket)
         {
             _dal = dal;
             _webSocket = webSocket;
@@ -31,11 +31,11 @@ namespace MarkerService
         public async Task<Response> CreateMarker(CreateMarkerRequest request)
         {
             Response retval = new CreateMarkerResponseInvalidDocID(request);
-            if (!await IsDocumentExists(request.DocID))
+            if (!_dal.IsDocumentExists(_conn,request.DocID))
             {
                 retval = new CreateMarkerResponseInvalidDocID(request);
             }
-            else if (!await IsUserExists(request.UserID))
+            else if (!_dal.IsUserExists(_conn ,request.UserID))
             {
                 retval = new CreateMarkerResponseInvalidUserID(request);
             }else if (!ValidateMarkerType(request.MarkerType))
@@ -51,23 +51,11 @@ namespace MarkerService
                     ,MarkerLocation = request.MarkerLocation,
                     MarkerType =  request.MarkerType,UserID = request.UserID
                 };
-                IDBParameter markerID = _dal.CreateParameter("P_MARKER_ID", id);
-                IDBParameter docID = _dal.CreateParameter("P_DOC_ID", request.DocID);
-                IDBParameter userID = _dal.CreateParameter("P_USER_ID", request.UserID);
-                IDBParameter backColor = _dal.CreateParameter("P_BACK_COLOR", request.BackColor);
-                IDBParameter foreColor = _dal.CreateParameter("P_FORE_COLOR", request.ForeColor);
-                IDBParameter markerType = _dal.CreateParameter("P_MARKR_TYPE",request.MarkerType);
-                IDBParameter markerx = _dal.CreateParameter("P_MARKER_X", request.MarkerLocation.PointX);
-                IDBParameter markery = _dal.CreateParameter("P_MARKER_Y", request.MarkerLocation.PointY);
-                IDBParameter markerxRadius = _dal.CreateParameter("P_MARKER_X_RADIUS", request.MarkerLocation.RadiusX);
-                IDBParameter markeryRadius = _dal.CreateParameter("P_MARKER_Y_RADIUS", request.MarkerLocation.RadiusY);
                 try
                 {
-                    _dal.ExecuteSPQuery(_conn, "CREATEMARKER", docID, markerID, markerType, markerx, markery,
-                        markerxRadius,
-                        markeryRadius, foreColor, backColor, userID);
+                    _dal.CreateMarker(_conn,marker);
                     retval = new CreateMarkerResponseOK(request);
-                    await _webSocket.Notify("new Marker "+ id);
+                    await _webSocket.SendNewMarker(marker);
                 }
                 catch(Exception ex)
                 {
@@ -82,14 +70,12 @@ namespace MarkerService
         {
             //TODO test
             Response retval = new GetMarkersResponseInvalidDocID(request);
-            if (await IsDocumentExists(request.DocID))
+            if (_dal.IsDocumentExists(_conn,request.DocID))
             {
                 try
                 {
                     List<Marker> markers = new List<Marker>();
-                    IDBParameter docID = _dal.CreateParameter("P_DOC_ID", request.DocID);
-                    IDBParameter outParam = _dal.GetOutParameter();
-                    DataSet ds = _dal.ExecuteSPQuery(_conn, "GETMARKERS", docID,outParam);
+                    DataSet ds = _dal.GetMarkers(_conn, request.DocID);
                     foreach (DataRow row in ds.Tables[0].Rows)
                     {
                         markers.Add(CreateMarkerFromRow(row));
@@ -108,14 +94,14 @@ namespace MarkerService
         public async Task<Response> RemoveMarker(RemoveMarkerRequest request)
         {
             Response retval = new RemoveMarkerResponseInvalidID(request);
-            if (await IsMarkerExists(request.MarkerID))
+            if (_dal.IsMarkerExists(_conn,request.MarkerID))
             {
-                IDBParameter markerID = _dal.CreateParameter("P_MARKER_ID", request.MarkerID);
+                
                 try
                 {
-                    _dal.ExecuteSPQuery(_conn, "REMOVEMARKER", markerID);
+                    _dal.RemoveMarker(_conn,request.MarkerID);
                     retval = new RemoveMarkerResponseOK(request);
-                    _webSocket.Notify("remove marker: " + markerID);
+                    await _webSocket.SendRemoveMarker(request.MarkerID);
                 }
                 catch(Exception ex)
                 {
@@ -138,7 +124,7 @@ namespace MarkerService
             };
             return marker;
         }
-        private async Task<bool> IsDocumentExists(string docID)
+        /*private async Task<bool> IsDocumentExists(string docID)
         {
             var retval = true;
             DataSet ds = _dal.ExecuteQuery(_conn, "select * from documents where document_id = '" + docID + "'");
@@ -148,9 +134,9 @@ namespace MarkerService
             }
 
             return retval;
-        }
+        }*/
 
-        private async Task<bool> IsMarkerExists(string markerID)
+        /*private async Task<bool> IsMarkerExists(string markerID)
         {
             var retval = true;
             DataSet ds = _dal.ExecuteQuery(_conn, "select * from documents_markers where marker_id = '" + markerID + "'");
@@ -160,8 +146,8 @@ namespace MarkerService
             }
 
             return retval;
-        }
-        private async Task<bool> IsUserExists(string userID)
+        }*/
+        /*private async Task<bool> IsUserExists(string userID)
         {
             var retval = true;
             DataSet ds = _dal.ExecuteQuery(_conn, "SELECT * FROM USERS WHERE USERID = '" + userID + "'");
@@ -171,7 +157,7 @@ namespace MarkerService
             }
 
             return retval;
-        }
+        }*/
 
         private bool ValidateMarkerType(string markerType)
         {

@@ -1,6 +1,7 @@
 using DALContracts;
 using DocMarkingSystemContracts.DTO.Users;
 using DocMarkingSystemContracts.Interfaces;
+using DocMarkingSystemDAL;
 using NUnit.Framework;
 using ORDAL;
 using UserService;
@@ -17,7 +18,7 @@ namespace UserServiceTests
             var strConn = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))" +
                           "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));" +
                           "User Id=ZIVPROJ;Password=1234;";
-            _userService = new UserServiceImpl(dal);
+            _userService = new UserServiceImpl(new DocMarkingSystemDALImpl(dal));
             _userService.Connect(strConn);
 
         }
