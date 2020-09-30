@@ -65,7 +65,7 @@ namespace DocMarkingSystemAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            //web socket
             app.UseWebSockets();
             app.Use(async (context, next) =>
             {

@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DIContract;
 using Newtonsoft.Json;
 
 namespace DocMarkingSystemContracts.DTO.LiveDrawWS
 {
-    public class LiveDrawResponse
+    public class LiveDrawResponse:Response
     {
         [JsonProperty("userID")]
         public string UserID { get; set; }
-        public string ResponseType { get; set; }
-
-        public LiveDrawResponse()
-        {
-            ResponseType = this.GetType().Name;
-        }
+        
     }
 }
