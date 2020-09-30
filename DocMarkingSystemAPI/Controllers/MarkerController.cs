@@ -8,6 +8,7 @@ using DocMarkingSystemContracts.DTO.Sharing;
 using DocMarkingSystemContracts.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace DocMarkingSystemAPI.Controllers
 {
@@ -17,12 +18,9 @@ namespace DocMarkingSystemAPI.Controllers
     {
         private IMarkerService _markerService;
 
-        public MarkerController(IMarkerService markerService)
+        public MarkerController(IMarkerService markerService,IConfiguration conf)
         {
-            var strConn =
-                "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))" +
-                "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));" +
-                "User Id=ZIVPROJ;Password=1234;";
+            var strConn = conf.GetValue<string>("Oracle:ConnStr");
             _markerService = markerService;
             _markerService.Connect(strConn);
         }

@@ -24,9 +24,14 @@ namespace DocMarkingSystemAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -111,17 +116,23 @@ namespace DocMarkingSystemAPI
                         WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
                         var handler = app.ApplicationServices.GetService<ILiveDrawWebSocket>();
                         await handler.onConnected(webSocket, userID, docID);
-                        var buffer = new byte[4082];
-                        var recive = await webSocket.ReceiveAsync(new Memory<byte>(buffer)
-                            , CancellationToken.None);
-                        if (recive.MessageType == WebSocketMessageType.Close)
+                        
+                        while (true)
                         {
-                            await handler.onDisconnected(webSocket, userID, docID);
+                            var buffer = new byte[4082];
+                            var recive = await webSocket.ReceiveAsync(new Memory<byte>(buffer)
+                                , CancellationToken.None);
+                            if (recive.MessageType == WebSocketMessageType.Close)
+                            {
+                                await handler.onDisconnected(webSocket, userID, docID);
+                                break;
+                            }
+                            else
+                            {
+                                await handler.Receive(webSocket, userID, docID, buffer);
+                            }
                         }
-                        else
-                        {
-                            await handler.Receive(webSocket, userID, docID,buffer);
-                        }
+                        
                     }
                     else
                     {

@@ -8,4 +8,8 @@
     <ProjectReference Include="..\DocMarkingSystemContracts\DocMarkingSystemContracts.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy $(TargetDir)\$(TargetFileName) ..\DocMarkingSystemAPI\dlls" />
+  </Target>
+
 </Project>

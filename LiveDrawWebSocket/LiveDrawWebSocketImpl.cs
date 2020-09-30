@@ -25,20 +25,22 @@ namespace LiveDrawWebSocket
         public async Task onConnected(WebSocket socket, string id, string docId)
         {
             await Handler.onConnected(socket, id);
-            AddViewer(docId, id);
+            await AddViewer(docId, id);
 
         }
 
         public async Task onDisconnected(WebSocket socket, string id, string docId)
         {
             await Handler.onDisconnected(socket);
+            await RemoveViewer(docId, id);
         }
 
         public async Task Receive(WebSocket socket, string id, string docID, byte[] buffer)
         {
             try
             {
-                var req = JsonConvert.DeserializeObject<LiveDrawRequest>(Encoding.UTF8.GetString(buffer));
+                var request = Encoding.UTF8.GetString(buffer);
+                var req = JsonConvert.DeserializeObject<LiveDrawRequest>(request);
                 if (req.RequestType == typeof(EndLiveDrawRequest).Name)
                 {
                     var response = new EndLiveDrawResponse() {UserID = id};
@@ -49,7 +51,7 @@ namespace LiveDrawWebSocket
                 {
                     var newLineReq = JsonConvert.DeserializeObject<NewLiveDrawRequest>(Encoding.UTF8.GetString(buffer));
                     await AddLine(id, newLineReq.Line);
-                    var response = new NewLiveDrawResponse() {Lines = _lines[id], UserID = id};
+                    var response = new NewLiveDrawResponse() {Line = newLineReq.Line, UserID = id};
                     await UpdateAll(_users[docID], response);
                 }
             }

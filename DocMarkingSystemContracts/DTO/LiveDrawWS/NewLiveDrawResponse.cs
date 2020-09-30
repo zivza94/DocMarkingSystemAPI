@@ -8,7 +8,7 @@ namespace DocMarkingSystemContracts.DTO.LiveDrawWS
 {
     public class NewLiveDrawResponse:LiveDrawResponse
     {
-        [JsonProperty("lines")]
-        public List<Line> Lines { get; set; }
+        [JsonProperty("line")]
+        public Line Line { get; set; }
     }
 }
